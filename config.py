@@ -1,0 +1,2 @@
+TOKEN = "MTE2OTQwOTg2MDE5OTI1NjIwNA.GLjpa2.sq3bWTZgJlrlnROm9Rz21HcdNrJpPq_FaentxY"
+PREFIX = "$"
