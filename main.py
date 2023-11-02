@@ -6,7 +6,7 @@ from nextcord.ext import commands
 # Create Bot
 intents = nextcord.Intents.all()
 intents.members = True
-bot = commands.Bot(command_prefix=config.PREFIX, intents=intents)
+bot = commands.Bot(command_prefix=os.environ.get("TOKEN"), intents=intents)
 
 # Create First Event
 @bot.event
