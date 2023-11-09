@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,7 +8,6 @@ from nextcord.ext import commands
 import asyncio
 from datetime import datetime, timedelta
 import os
-import requests, bs4
 import re
 
 class Daily(commands.Cog):
@@ -18,7 +18,7 @@ class Daily(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         # Set the scheduled task to run at 9:00 AM
-        scheduled_time = "9:00"
+        scheduled_time = "20:47"
         scheduled_time = datetime.strptime(scheduled_time, "%H:%M").time()
 
         while True:
@@ -28,11 +28,11 @@ class Daily(commands.Cog):
             print(scheduled_time == now)
 
             # Check if the current time matches the scheduled time
-            if now == scheduled_time:
+            if now == now:
                 # Gather all Scraped Events
                 events = scrape_events()
                 if events:
-                    channel_id = 1169414824531341352
+                    channel_id = 1172004094592946187
                     channel= self.bot.get_channel(channel_id)
                     await channel.send(f'Good morning everyone, here are the events for today and tomorrow!')
                     for event in events:
@@ -68,12 +68,12 @@ def is_today_or_tomorrow(date_str):
 
 def scrape_events():
  
+    service = Service('/usr/lib/chromium-browser/chromedriver')
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
-    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+    driver = webdriver.Chrome(service=service, options=chrome_options)
     driver.get("https://knightconnect.campuslabs.com/engage/events")
     wait = WebDriverWait(driver, 20)  
 
@@ -108,6 +108,12 @@ def scrape_events():
         # Find the start and end positions of the URL
         start = style_attribute.find('url("')
         end = style_attribute.find('.png', start) + len('.png')
+        if end == -1:
+            end = style_attribute.find('.pdf', start) + len('.pdf')
+        if end == -1:
+            end = style_attribute.find('.jpg', start) + len('.jpg')
+            
+
 
         # Base Case URL
         image_url = None
